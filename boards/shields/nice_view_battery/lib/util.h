@@ -3,9 +3,9 @@
 #include <lvgl.h>
 #include <zmk/endpoints.h>
 
-#define CANVAS_SIZE 68
-#define TOP_SIZE                                                                                   \
-    IS_ENABLED(CONFIG_NICE_VIEW_WIDGET_INVERTED) ? CANVAS_SIZE : 22
+#define CANVAS_SIZE 114
+#define BOTTOM_SIZE 68
+#define TOP_SIZE    68
 #define LVGL_BACKGROUND                                                                            \
     IS_ENABLED(CONFIG_NICE_VIEW_WIDGET_INVERTED) ? lv_color_black() : lv_color_white()
 #define LVGL_FOREGROUND                                                                            \
@@ -13,6 +13,7 @@
 
 struct status_state {
     uint8_t battery;
+    uint8_t battery_peripheral;
     bool charging;
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     struct zmk_endpoint_instance selected_endpoint;
@@ -20,6 +21,7 @@ struct status_state {
     bool active_profile_connected;
     bool active_profile_bonded;
     const char *layer_label;
+    bool peripheral_connected;
 #else
     bool connected;
 #endif

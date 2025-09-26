@@ -3,6 +3,7 @@
 #include "../assets/font.h"
 
 #define OFFSET_X 0
+#define OFFSET_X_PERIPHERAL 44
 #define OFFSET_Y 0
 
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
@@ -10,6 +11,8 @@
     LV_IMG_DECLARE(bt_disconnected);
     LV_IMG_DECLARE(unbound);
     LV_IMG_DECLARE(usb);
+    LV_IMG_DECLARE(link);
+    LV_IMG_DECLARE(link_disconnected);
 #else
     LV_IMG_DECLARE(link);
     LV_IMG_DECLARE(link_disconnected);
@@ -57,6 +60,24 @@ static void draw_ble_connected(lv_obj_t *canvas) {
                        &img_dsc);
 }
 
+static void draw_peripheral_connected(lv_obj_t *canvas) {
+    lv_draw_img_dsc_t img_dsc;
+    lv_draw_img_dsc_init(&img_dsc);
+
+    lv_canvas_draw_img(canvas, OFFSET_X_PERIPHERAL, OFFSET_Y,
+                       &link,
+                       &img_dsc);
+}
+
+static void draw_peripheral_disconnected(lv_obj_t *canvas) {
+    lv_draw_img_dsc_t img_dsc;
+    lv_draw_img_dsc_init(&img_dsc);
+
+    lv_canvas_draw_img(canvas, OFFSET_X_PERIPHERAL, OFFSET_Y,
+                       &link_disconnected,
+                       &img_dsc);
+}
+
 void draw_output_status(lv_obj_t *canvas, const struct status_state *state) {
 #if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     switch (state->selected_endpoint.transport) {
@@ -76,6 +97,13 @@ void draw_output_status(lv_obj_t *canvas, const struct status_state *state) {
         }
         break;
     }
+
+    if (state->peripheral_connected) {
+        draw_peripheral_connected(canvas);
+    } else {
+        draw_peripheral_disconnected(canvas);
+    }
+
 #else
     if (state->connected) {
         draw_ble_connected(canvas);
